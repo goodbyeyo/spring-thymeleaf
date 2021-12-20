@@ -30,7 +30,7 @@ public class ItemRepository {
         return new ArrayList<>(store.values()); // ArrayList에 감싸서 반환해도 store에 변화없다
     }
 
-    public void updateItem(Long itemId, Item updateParam) {
+    public void update(Long itemId, Item updateParam) {
         Item findItem = findById(itemId);
         findItem.setItemName(updateParam.getItemName());
         findItem.setPrice(updateParam.getPrice());
