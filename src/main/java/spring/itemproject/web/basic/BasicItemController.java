@@ -8,6 +8,7 @@ import org.springframework.web.bind.annotation.*;
 import org.springframework.web.servlet.mvc.support.RedirectAttributes;
 import spring.itemproject.domain.ItemRepository;
 import spring.itemproject.domain.item.Item;
+import spring.itemproject.domain.item.ItemType;
 
 import javax.annotation.PostConstruct;
 import java.util.LinkedHashMap;
@@ -31,8 +32,12 @@ public class BasicItemController {
         return regions;
     }
 
-    @GetMapping
+    @ModelAttribute("itemTypes")
+    public ItemType[] itemTypes() {
+        return ItemType.values();   // enum의 모든 정보를 배열로 반환한다
+    }
 
+    @GetMapping
     public String items(Model model) {
 
         List<Item> items = itemRepository.findAll();
@@ -100,6 +105,7 @@ public class BasicItemController {
     @PostMapping("/add")
     public String addItemV6(Item item, RedirectAttributes redirectAttributes) {
         log.info("item.open={}", item.getOpen());
+        log.info("item.regions={}", item.getRegions());
         Item savedItem = itemRepository.save(item);
         redirectAttributes.addAttribute("itemId", savedItem.getId());
         redirectAttributes.addAttribute("status", true);
