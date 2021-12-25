@@ -10,7 +10,9 @@ import spring.itemproject.domain.ItemRepository;
 import spring.itemproject.domain.item.Item;
 
 import javax.annotation.PostConstruct;
+import java.util.LinkedHashMap;
 import java.util.List;
+import java.util.Map;
 
 @Slf4j
 @Controller
@@ -20,8 +22,19 @@ public class BasicItemController {
 
     private final ItemRepository itemRepository;
 
+    @ModelAttribute("regions")
+    public Map<String, String> regions() {
+        Map<String, String> regions = new LinkedHashMap<>();    // 순서보장
+        regions.put("SEOUL", "서울");
+        regions.put("BUSAN", "부산");
+        regions.put("JEJU", "제주");
+        return regions;
+    }
+
     @GetMapping
+
     public String items(Model model) {
+
         List<Item> items = itemRepository.findAll();
         model.addAttribute("items", items);
         return "basic/items";
@@ -35,16 +48,16 @@ public class BasicItemController {
     }
 
     @GetMapping("/add")
-    public String addForm(Model model){
+    public String addForm(Model model) {
         model.addAttribute("item", new Item());
         return "basic/addForm";
     }
 
-//    @PostMapping("/add")
+    //    @PostMapping("/add")
     public String addItemV1(@RequestParam String itemName,
-                       @RequestParam int price,
-                       @RequestParam Integer quantity,
-                       Model model){
+                            @RequestParam int price,
+                            @RequestParam Integer quantity,
+                            Model model) {
         Item item = new Item();
         item.setItemName(itemName);
         item.setPrice(price);
@@ -54,7 +67,7 @@ public class BasicItemController {
         model.addAttribute("item", item);
         return "basic/item";
     }
-    
+
     // @ModelAttribute("이름") => Clinet에 이름으로 데이터를 담아서 전달한다
     // @PostMapping("/add")
     public String addItemV2(@ModelAttribute("item") Item item, Model model) {
@@ -94,7 +107,6 @@ public class BasicItemController {
     }
 
 
-
     @GetMapping("/{itemId}/edit")
     public String editForm(@PathVariable Long itemId, Model model) {
         Item item = itemRepository.findById(itemId);
@@ -118,6 +130,6 @@ public class BasicItemController {
         itemRepository.save(new Item("itemA", 10000, 10));
         itemRepository.save(new Item("itemB", 20000, 20));
     }
-    
-    
+
+
 }
