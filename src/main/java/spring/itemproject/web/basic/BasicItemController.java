@@ -33,7 +33,8 @@ public class BasicItemController {
     }
 
     @GetMapping("/add")
-    public String addForm(){
+    public String addForm(Model model){
+        model.addAttribute("item", new Item()); // thymeleaf를 위한 객체 값 전달 추가
         return "basic/addForm";
     }
 
