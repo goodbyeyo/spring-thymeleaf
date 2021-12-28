@@ -21,7 +21,7 @@
     </div>
     <h4 class="mb-3">상품 입력</h4>
     <!-- th:action 에 url이 없으면 같은 url에 POST http method로 요청을 보낸다 -->
-    <!--<form action="item.html" th:action="/basic/items/add" method="post"> -->
+    <!--<form action="item.html" th:action="/validation/v2/items/add" method="post"> -->
     <form action="item.html" th:action th:object="${item}" method="post">
         <!--errors? 는 errors가 null 이면 무시하는 로직 -->
         <div class="field-error" th:if="${errors?.containsKey('globalError')}">
