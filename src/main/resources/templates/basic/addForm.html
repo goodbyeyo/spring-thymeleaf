@@ -8,6 +8,10 @@
         .container {
             max-width: 560px;
         }
+        .field-error {
+            border-color: #dc3545;
+            color: #dc3545;
+        }
     </style>
 </head>
 <body>
@@ -19,6 +23,12 @@
     <!-- th:action 에 url이 없으면 같은 url에 POST http method로 요청을 보낸다 -->
     <!--<form action="item.html" th:action="/basic/items/add" method="post"> -->
     <form action="item.html" th:action th:object="${item}" method="post">
+        <!--errors? 는 errors가 null 이면 무시하는 로직 -->
+        <div th:if="${errors?.containsKey('globalError')}">
+            <p class="field-error" th:text="${errors['globalError']}">전체 오류 메세지</p>
+        </div>
+
+        
         <div>
             <label for="itemName" th:text="#{label.item.itemName}">상품명</label>
             <input type="text" id="itemName" class="form-control" th:field="*{itemName}" placeholder="이름을 입력하세요">
