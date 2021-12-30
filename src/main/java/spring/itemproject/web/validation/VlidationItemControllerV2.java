@@ -9,6 +9,8 @@ import org.springframework.validation.BindingResult;
 import org.springframework.validation.FieldError;
 import org.springframework.validation.ObjectError;
 import org.springframework.validation.ValidationUtils;
+import org.springframework.validation.annotation.Validated;
+import org.springframework.web.bind.WebDataBinder;
 import org.springframework.web.bind.annotation.*;
 import org.springframework.web.servlet.mvc.support.RedirectAttributes;
 import spring.itemproject.domain.ItemRepository;
@@ -22,10 +24,16 @@ import java.util.*;
 @Slf4j
 @Controller
 @RequestMapping("/validation/v2/items")
-@RequiredArgsConstructor    // final이 붙은 객체의 생성자를 만들어준다
+@RequiredArgsConstructor    // final이 붙은 객체의 생성자를 만들어준다, 생성자가 하나일때는 자동으로 생성자 만들어준다
 public class VlidationItemControllerV2 {
 
     private final ItemRepository itemRepository;
+    private final ItemValidator itemValidator;
+
+    @InitBinder
+    public void init(WebDataBinder dataBinder) {
+        dataBinder.addValidators(itemValidator);
+    }
 
     @ModelAttribute("regions")
     public Map<String, String> regions() {
@@ -198,24 +206,31 @@ public class VlidationItemControllerV2 {
         return "redirect:/validation/v2/items/{itemId}";
     }
 
-    @PostMapping("/add")
+    // @PostMapping("/add")
     public String addItemV4(Item item, BindingResult bindingResult, RedirectAttributes redirectAttributes, Model model) {
         // 검증 로직
-        
-        // StringUtrils.hasText() 와 같은 기능
-        ValidationUtils.rejectIfEmptyOrWhitespace(bindingResult, "itemName", "required");
 
         /*
+        if (bindingResult.hasErrors()) {
+            log.info("error={}", bindingResult);
+            return "validation/v2/addForm";
+        }
+        StringUtrils.hasText() 와 같은 기능
+        ValidationUtils.rejectIfEmptyOrWhitespace(bindingResult, "itemName", "required");
+        */
+        log.info("objectName={}", bindingResult.getObjectName());
+        log.info("target={}", bindingResult.getTarget());
+
         if (!StringUtils.hasText(item.getItemName())) {
             bindingResult.rejectValue("itemName", "required");
         }
-        */
-        
+
+
         if (item.getPrice() == null || item.getPrice() < 1000 || item.getPrice() > 100000) {
             bindingResult.rejectValue("price", "range",new Object[]{1000, 1000000}, null);
         }
         if (item.getQuantity() == null || item.getQuantity() >= 9999) {
-            bindingResult.rejectValue("quantity", "ax", new Object[]{9999}, null);
+            bindingResult.rejectValue("quantity", "max", new Object[]{9999}, null);
         }
 
         // 특정 필드가 아닌 복합 룰 검증
@@ -236,6 +251,44 @@ public class VlidationItemControllerV2 {
 
         log.info("item.open={}", item.getOpen());
         log.info("item.regions={}", item.getRegions());
+        Item savedItem = itemRepository.save(item);
+        redirectAttributes.addAttribute("itemId", savedItem.getId());
+        redirectAttributes.addAttribute("status", true);
+        return "redirect:/validation/v2/items/{itemId}";
+    }
+
+    // @PostMapping("/add")
+    public String addItemV5(Item item, BindingResult bindingResult, RedirectAttributes redirectAttributes, Model model) {
+
+//        new ItemValidator().validate(item, bindingResult);
+        itemValidator.validate(item, bindingResult);
+
+        // 검증에 실패하면 다시 입력폼으로
+        if (bindingResult.hasErrors()) {
+            log.info("errors={}", bindingResult);
+//            model.addAttribute("errors", errors);
+            return "validation/v2/addForm";
+        }
+
+        // 성공 로직
+        Item savedItem = itemRepository.save(item);
+        redirectAttributes.addAttribute("itemId", savedItem.getId());
+        redirectAttributes.addAttribute("status", true);
+        return "redirect:/validation/v2/items/{itemId}";
+    }
+
+    // @Validated 어노테이션으로 검증동작
+    @PostMapping("/add")
+    public String addItemV6(@Validated @ModelAttribute Item item, BindingResult bindingResult, RedirectAttributes redirectAttributes, Model model) {
+        
+        // 검증에 실패하면 다시 입력폼으로
+        if (bindingResult.hasErrors()) {
+            log.info("errors={}", bindingResult);
+//            model.addAttribute("errors", errors);
+            return "validation/v2/addForm";
+        }
+
+        // 성공 로직
         Item savedItem = itemRepository.save(item);
         redirectAttributes.addAttribute("itemId", savedItem.getId());
         redirectAttributes.addAttribute("status", true);
