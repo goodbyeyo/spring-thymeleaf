@@ -25,7 +25,7 @@ import java.util.*;
 @Controller
 @RequestMapping("/validation/v2/items")
 @RequiredArgsConstructor    // final이 붙은 객체의 생성자를 만들어준다, 생성자가 하나일때는 자동으로 생성자 만들어준다
-public class VlidationItemControllerV2 {
+public class ValidationItemControllerV2 {
 
     private final ItemRepository itemRepository;
     private final ItemValidator itemValidator;
