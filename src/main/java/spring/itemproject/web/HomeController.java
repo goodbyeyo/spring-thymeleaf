@@ -8,6 +8,9 @@ import org.springframework.web.bind.annotation.CookieValue;
 import org.springframework.web.bind.annotation.GetMapping;
 import spring.itemproject.domain.member.Member;
 import spring.itemproject.domain.member.MemberRepository;
+import spring.itemproject.web.session.SessionManager;
+
+import javax.servlet.http.HttpServletRequest;
 
 @Slf4j
 @Controller
@@ -15,6 +18,7 @@ import spring.itemproject.domain.member.MemberRepository;
 public class HomeController {
 
     private final MemberRepository memberRepository;
+    private final SessionManager sessionManager;
 
 //    @GetMapping("/")
     public String home() {
@@ -22,7 +26,7 @@ public class HomeController {
     }
 
     // 로그인 처리까지 되는 홈화면
-    @GetMapping("/")
+    // @GetMapping("/")
     public String homeLogin(@CookieValue(name = "memberId", required = false) Long memberId, Model model) {
         if (memberId == null) {
             return "home";
@@ -35,6 +39,20 @@ public class HomeController {
         }
 
         model.addAttribute("member", loginMember);
+        return "loginHome";
+    }
+
+    @GetMapping("/")
+    public String homeLoginV2(HttpServletRequest request, Model model) {
+
+        // 세션 관리자에 저장된 회원 정보 조회
+        Member member = (Member) sessionManager.getSession(request);
+
+        if (member == null) {
+            return "home";
+        }
+
+        model.addAttribute("member", member);
         return "loginHome";
     }
 }
