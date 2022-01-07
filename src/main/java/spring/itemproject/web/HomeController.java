@@ -9,13 +9,10 @@ import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.SessionAttribute;
 import spring.itemproject.domain.member.Member;
 import spring.itemproject.domain.member.MemberRepository;
-<<<<<<< HEAD
 import spring.itemproject.web.session.SessionManager;
 
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpSession;
-=======
->>>>>>> parent of 3525fe8 (로그인 세션 직접 만들어서 적용하기)
 
 @Slf4j
 @Controller
@@ -23,6 +20,7 @@ import javax.servlet.http.HttpSession;
 public class HomeController {
 
     private final MemberRepository memberRepository;
+    private final SessionManager sessionManager;
 
 //    @GetMapping("/")
     public String home() {
@@ -30,7 +28,7 @@ public class HomeController {
     }
 
     // 로그인 처리까지 되는 홈화면
-    @GetMapping("/")
+    // @GetMapping("/")
     public String homeLogin(@CookieValue(name = "memberId", required = false) Long memberId, Model model) {
         if (memberId == null) {
             return "home";
@@ -45,7 +43,6 @@ public class HomeController {
         model.addAttribute("member", loginMember);
         return "loginHome";
     }
-<<<<<<< HEAD
 
     // @GetMapping("/")
     public String homeLoginV2(HttpServletRequest request, Model model) {
@@ -97,6 +94,4 @@ public class HomeController {
         model.addAttribute("member", member);
         return "loginHome";
     }
-=======
->>>>>>> parent of 3525fe8 (로그인 세션 직접 만들어서 적용하기)
 }

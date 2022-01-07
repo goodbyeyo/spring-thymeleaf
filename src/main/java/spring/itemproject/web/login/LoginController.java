@@ -10,13 +10,11 @@ import org.springframework.web.bind.annotation.ModelAttribute;
 import org.springframework.web.bind.annotation.PostMapping;
 import spring.itemproject.domain.login.LoginService;
 import spring.itemproject.domain.member.Member;
-<<<<<<< HEAD
 import spring.itemproject.web.SessionConst;
 import spring.itemproject.web.session.SessionManager;
-=======
->>>>>>> parent of 3525fe8 (로그인 세션 직접 만들어서 적용하기)
 
 import javax.servlet.http.Cookie;
+import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 import javax.servlet.http.HttpSession;
 
@@ -26,13 +24,14 @@ import javax.servlet.http.HttpSession;
 public class LoginController {
 
     private final LoginService loginService;
+    private final SessionManager sessionManager;
 
     @GetMapping("/login")
     public String loginForm(@ModelAttribute("loginForm") LoginForm form) {
         return "login/loginForm";
     }
 
-    @PostMapping("/login")
+    // @PostMapping("/login")
     public String login(@Validated @ModelAttribute LoginForm form, BindingResult bindingResult, HttpServletResponse response) {
         if (bindingResult.hasErrors()) {
             return "login/loginForm";
@@ -47,14 +46,15 @@ public class LoginController {
 
         // 로그인 성공 처리 TODO
 
+
         // 웹 브라우저는 종료전까지 회원의 id를 서버에 계속 보내줌
+        // 쿠키에 시간 정보를 주지 않으면 세션 쿠키 브라우저 종료시 모두 종료됨
         Cookie isCookie = new Cookie("memberId", String.valueOf(loginMember.getId()));
         response.addCookie(isCookie);
 
         return "redirect:/";
     }
 
-<<<<<<< HEAD
     // @PostMapping("/login")
     public String loginV2(@Validated @ModelAttribute LoginForm form, BindingResult bindingResult, HttpServletResponse response) {
         if (bindingResult.hasErrors()) {
@@ -102,15 +102,11 @@ public class LoginController {
     }
 
     // @PostMapping("/logout")
-=======
-    @PostMapping("/logout")
->>>>>>> parent of 3525fe8 (로그인 세션 직접 만들어서 적용하기)
     public String logout(HttpServletResponse response, String cookieName) {
         expireCookie(response, "memberId");
         return "redirect:/";
     }
 
-<<<<<<< HEAD
     // @PostMapping("/logout")
     public String logoutV2(HttpServletRequest request, String cookieName) {
         sessionManager.expire(request);
@@ -128,8 +124,6 @@ public class LoginController {
         return "redirect:/";
     }
 
-=======
->>>>>>> parent of 3525fe8 (로그인 세션 직접 만들어서 적용하기)
     private void expireCookie(HttpServletResponse response, String memberId) {
         Cookie cookie = new Cookie(memberId, null);
         cookie.setMaxAge(0);
