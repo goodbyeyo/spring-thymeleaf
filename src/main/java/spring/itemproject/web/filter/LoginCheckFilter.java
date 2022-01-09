@@ -1,6 +1,7 @@
 package spring.itemproject.web.filter;
 
 import lombok.extern.slf4j.Slf4j;
+import org.springframework.stereotype.Component;
 import org.springframework.util.PatternMatchUtils;
 import spring.itemproject.web.SessionConst;
 
@@ -11,6 +12,7 @@ import javax.servlet.http.HttpSession;
 import java.io.IOException;
 
 @Slf4j
+//@Component
 public class LoginCheckFilter implements Filter { // default 예약어가 있는 메서드는 interface를 반드시 구현하지 않아도 된다
 
     private static final String[] whitelist = {"/", "/members/add", "/login",
