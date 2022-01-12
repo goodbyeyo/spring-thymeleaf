@@ -6,6 +6,7 @@ import lombok.extern.slf4j.Slf4j;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.RestController;
+import spring.itemproject.exception.ex.BadRequestException;
 import spring.itemproject.exception.ex.UserException;
 
 @Slf4j
@@ -28,6 +29,11 @@ public class ApiExceptionController {
         }
 
         return new MemberDto(id,"hello" + id);
+    }
+
+    @GetMapping("/api/response-status-ex1")
+    public String responseStatusEx1() {
+        throw new BadRequestException();
     }
 
     @Data
