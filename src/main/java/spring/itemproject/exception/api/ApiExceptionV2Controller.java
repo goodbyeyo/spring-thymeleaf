@@ -13,35 +13,6 @@ import spring.itemproject.exception.exhandler.ErrorResult;
 @RestController
 public class ApiExceptionV2Controller {
 
-    @ResponseStatus(HttpStatus.BAD_REQUEST)
-    @ExceptionHandler(IllegalArgumentException.class)
-    public ErrorResult illegalExHandle(IllegalArgumentException e) {
-        log.error("[exceptionHandle] ex", e);
-        return new ErrorResult("BAD", e.getMessage());
-    }
-
-    @ExceptionHandler   // (UserException.class) 생략해도 된다
-    public ResponseEntity<ErrorResult> userExHandle(UserException e) {  // 컨트롤러 호출하는것과 비슷
-        log.error("[exceptionHandle] ex", e);
-        ErrorResult errorResult = new ErrorResult("USER-EX", e.getMessage());
-        return new ResponseEntity<>(errorResult, HttpStatus.BAD_REQUEST);
-    }
-
-    // RuneTimeException은 앞에서 해결불가능하기때문에 가장 넓은 Exception에서 처리
-    @ResponseStatus(HttpStatus.INTERNAL_SERVER_ERROR)
-    @ExceptionHandler
-    public ErrorResult exHandle(Exception e) {
-        log.error("[exceptionHandle] ex", e);
-        return new ErrorResult("EX", "내부 오류");
-    }
-
-    // 화면 에러를 처리할때 사용 (잘 사용하지 않음)
-//    @ExceptionHandler(ViewException.class)
-//    public ModelAndView ex(ViewException e) {
-//        log.info("exception e", e);
-//        return new ModelAndView("error");
-//    }
-
     @GetMapping("/api2/members/{id}")
     public MemberDto getMember(@PathVariable("id") String id) {
         if (id.equals("ex")) {
