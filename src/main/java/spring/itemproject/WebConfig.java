@@ -11,6 +11,7 @@ import spring.itemproject.exception.filter.LogFilter;
 import spring.itemproject.exception.interceptor.LogInterceptor;
 import spring.itemproject.exception.resolver.MyHandlerExceptionResolver;
 import spring.itemproject.exception.resolver.UserHandlerExceptionResolver;
+import spring.itemproject.formatter.MyNumberFormatter;
 import spring.itemproject.typeconverter.converter.IntegerToStringConverter;
 import spring.itemproject.typeconverter.converter.IpPortToStringConverter;
 import spring.itemproject.typeconverter.converter.StringToIntegerConverter;
@@ -50,10 +51,15 @@ public class WebConfig implements WebMvcConfigurer {
     // 컨버터 등록하면 스프링이 제공하는 기본컨버터보다 우선권을 가진다
     @Override
     public void addFormatters(FormatterRegistry registry) {
-        registry.addConverter(new StringToIntegerConverter());
-        registry.addConverter(new IntegerToStringConverter());
+        // 우선순위 주석처리
+//        registry.addConverter(new StringToIntegerConverter());
+//        registry.addConverter(new IntegerToStringConverter());
+
         registry.addConverter(new StringToIpPortConverter());
         registry.addConverter(new IpPortToStringConverter());
+
+        // 추가
+        registry.addFormatter(new MyNumberFormatter());
 
     }
 }
